@@ -1,0 +1,23 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:1111/eureka/
+
+
+zuul:
+  sensitiveHeaders:
+  host:
+    maxPerRouteConnections: 500
+    maxTotalConnections: 1000
+  semaphore:
+    maxSemaphores: 100
+  routes:
+    players:
+      path: /players/**
+      url: http://localhost:8081
+    teams:
+      path: /teams/**
+      url: http://localhost:8082
+    eureka:
+      path: /eureka/**
+      url: http://localhost:1111
