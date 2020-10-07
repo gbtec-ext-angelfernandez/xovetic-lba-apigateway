@@ -1,0 +1,69 @@
+# HTTP Server
+server:
+  port: 8080   # HTTP (Tomcat) port
+  tomcat:
+    uri-encoding: UTF-8
+  compression:
+    enabled: true
+
+zuul:
+  sensitiveHeaders:
+  host:
+    maxPerRouteConnections: 500
+    maxTotalConnections: 1000
+  semaphore:
+    maxSemaphores: 100
+  routes:
+    players:
+      path: /players/**
+      url: http://lbaplayers:8080
+    teams:
+      path: /teams/**
+      url: http://lbateams:8080
+    eureka:
+      path: /eureka/**
+      url: http://eureka:1111
+    
+ribbon:
+  MaxConnectionsPerHost: 1000
+  MaxTotalConnections: 5000
+  ConnectTimeout: 10000
+  ReadTimeout: 300000
+feign:
+  hystrix:
+    enabled: true
+hystrix:
+    command:
+        default:
+            execution:
+                isolation:
+                    thread:
+                        timeoutInMilliseconds: 620000
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 5   # DO NOT DO THIS IN PRODUCTION
+    metadataMap:
+      instance-id: ${spring.application.name}
+    prefer-ip-address: true
+  client:
+    registerWithEureka: false
+    fetchRegistry: true
+    enabled: true
+    serviceUrl:
+      defaultZone: http://eureka:1111/eureka/
+
+spring:
+  http:
+    multipart:
+     max-file-size: 50MB
+     max-request-size: 50MB
+  servlet:
+    multipart:
+     max-file-size: 50MB
+     max-request-size: 50MB
+     
+logging:
+  file: ${java.io.tmpdir}/${spring.application.name}.log
+  level:
+    root: info
